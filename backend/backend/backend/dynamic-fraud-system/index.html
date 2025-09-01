@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Banking Fraud Detection System - Dynamic Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- System Status Bar -->
+    <div class="system-status-bar">
+        <div class="container flex items-center justify-between">
+            <div class="status-item">
+                <span class="status-dot active"></span>
+                <span>System Active</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">ML Models:</span>
+                <span id="modelStatus">3 Active</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Real-time Score:</span>
+                <span id="globalRiskScore">0.23</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Threats Blocked Today:</span>
+                <span id="threatsBlocked">47</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container flex items-center justify-between">
+            <div class="navbar-brand">
+                <h2>🛡️ FraudGuard Pro Dynamic</h2>
+            </div>
+            <div class="navbar-nav flex items-center gap-16">
+                <a href="#" class="nav-link active" data-section="dashboard">Live Dashboard</a>
+                <a href="#" class="nav-link" data-section="registration">Dynamic Registration</a>
+                <a href="#" class="nav-link" data-section="authentication">Biometric Auth</a>
+                <a href="#" class="nav-link" data-section="analytics">ML Analytics</a>
+                <a href="#" class="nav-link" data-section="admin">Admin Control</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Live Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Live Fraud Detection Dashboard</h1>
+                    <p class="text-secondary">Real-time monitoring with dynamic behavioral analysis</p>
+                    <div class="dashboard-controls">
+                        <button class="btn btn--secondary" onclick="refreshDashboard()">🔄 Refresh</button>
+                        <button class="btn btn--outline" onclick="exportData()">📊 Export Data</button>
+                        <button class="btn btn--primary" onclick="simulateFraudAttack()">⚡ Simulate Attack</button>
+                    </div>
+                </div>
+
+                <!-- Live Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card live">
+                        <div class="metric-header">
+                            <span class="metric-label">Live Registrations</span>
+                            <span class="metric-value" id="liveRegistrations">1,847</span>
+                        </div>
+                        <div class="metric-trend positive" id="regTrend">↑ 23% from yesterday</div>
+                        <div class="metric-chart">
+                            <canvas id="liveRegChart" width="100" height="40"></canvas>
+                        </div>
+                    </div>
+                    <div class="metric-card alert">
+                        <div class="metric-header">
+                            <span class="metric-label">Active Threats</span>
+                            <span class="metric-value" id="activeThreats">12</span>
+                        </div>
+                        <div class="metric-trend negative">🚨 High activity detected</div>
+                        <div class="threat-breakdown" id="threatBreakdown"></div>
+                    </div>
+                    <div class="metric-card success">
+                        <div class="metric-header">
+                            <span class="metric-label">ML Accuracy</span>
+                            <span class="metric-value" id="mlAccuracy">97.4%</span>
+                        </div>
+                        <div class="metric-trend positive">↑ Learning active</div>
+                        <div class="accuracy-timeline" id="accuracyTimeline"></div>
+                    </div>
+                    <div class="metric-card info">
+                        <div class="metric-header">
+                            <span class="metric-label">Response Time</span>
+                            <span class="metric-value" id="responseTime">0.08s</span>
+                        </div>
+                        <div class="metric-trend neutral">⚡ Real-time processing</div>
+                    </div>
+                </div>
+
+                <!-- Real-time Activity Feed -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card live-activity">
+                        <div class="card-header">
+                            <h3>🔴 Live Activity Stream</h3>
+                            <div class="activity-controls">
+                                <button class="activity-btn" onclick="pauseActivity()">⏸️ Pause</button>
+                                <button class="activity-btn" onclick="clearActivity()">🗑️ Clear</button>
+                            </div>
+                        </div>
+                        <div class="activity-stream" id="activityStream">
+                            <!-- Live activities will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>📊 Dynamic Risk Heatmap</h3>
+                        </div>
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="riskHeatmapChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Behavioral Biometrics Panel -->
+                <div class="dashboard-card biometrics-panel">
+                    <div class="card-header">
+                        <h3>🧠 Live Behavioral Biometrics</h3>
+                        <div class="biometrics-status">
+                            <span class="status-indicator live">Collecting</span>
+                            <span id="biometricsCount">847 samples</span>
+                        </div>
+                    </div>
+                    <div class="biometrics-grid">
+                        <div class="biometric-item">
+                            <div class="biometric-label">Keystroke Dynamics</div>
+                            <div class="biometric-value" id="keystrokeVariance">±12ms</div>
+                            <div class="biometric-chart">
+                                <canvas id="keystrokeChart" width="150" height="50"></canvas>
+                            </div>
+                        </div>
+                        <div class="biometric-item">
+                            <div class="biometric-label">Mouse Patterns</div>
+                            <div class="biometric-value" id="mouseVelocity">187px/s</div>
+                            <div class="biometric-chart">
+                                <canvas id="mouseChart" width="150" height="50"></canvas>
+                            </div>
+                        </div>
+                        <div class="biometric-item">
+                            <div class="biometric-label">Device Orientation</div>
+                            <div class="biometric-value" id="deviceOrientation">Stable</div>
+                            <div class="biometric-chart">
+                                <canvas id="orientationChart" width="150" height="50"></canvas>
+                            </div>
+                        </div>
+                        <div class="biometric-item">
+                            <div class="biometric-label">Scroll Behavior</div>
+                            <div class="biometric-value" id="scrollPattern">Organic</div>
+                            <div class="biometric-chart">
+                                <canvas id="scrollChart" width="150" height="50"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Registration Section -->
+        <section id="registration" class="section">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Dynamic User Registration</h1>
+                    <p class="text-secondary">Advanced fraud detection with real-time behavioral analysis</p>
+                </div>
+
+                <div class="registration-system">
+                    <div class="form-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Secure Registration</h3>
+                                <form id="dynamicRegistrationForm">
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control biometric-input" id="fullName" name="fullName" required>
+                                        <div class="input-analysis" id="fullNameAnalysis"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address *</label>
+                                        <input type="email" class="form-control biometric-input" id="email" name="email" required>
+                                        <div class="input-analysis" id="emailAnalysis"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number *</label>
+                                        <input type="tel" class="form-control biometric-input" id="phone" name="phone" required>
+                                        <div class="input-analysis" id="phoneAnalysis"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date of Birth *</label>
+                                        <input type="date" class="form-control biometric-input" id="dob" name="dob" required>
+                                    </div>
+
+                                    <!-- Advanced Honeypot Fields -->
+                                    <input type="text" name="email_secondary" id="email_secondary" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1" autocomplete="off">
+                                    <input type="text" name="company_name" id="company_name" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1" autocomplete="off">
+                                    <input type="url" name="website_url" id="website_url" style="position: absolute; left: -9999px; opacity: 0;" tabindex="-1" autocomplete="off">
+                                    <div style="position: absolute; left: -9999px; opacity: 0;" aria-hidden="true">
+                                        <input type="checkbox" name="bot_trap" id="bot_trap" tabindex="-1">
+                                        <label for="bot_trap">Check if you are a bot</label>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn--primary btn--full-width" id="submitButton">
+                                            Create Account
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>🛡️ Dynamic Fraud Analysis</h3>
+                                
+                                <!-- Real-time Risk Score -->
+                                <div class="risk-display">
+                                    <div class="risk-score-container">
+                                        <div class="risk-score-label">Live Risk Score</div>
+                                        <div class="risk-score-value" id="dynamicRiskScore">0.15</div>
+                                    </div>
+                                    <div class="risk-gauge">
+                                        <div class="gauge-track">
+                                            <div class="gauge-fill" id="riskGaugeFill" style="width: 15%"></div>
+                                        </div>
+                                        <div class="gauge-labels">
+                                            <span>Safe</span>
+                                            <span>Monitor</span>
+                                            <span>Block</span>
+                                        </div>
+                                    </div>
+                                    <div class="risk-status" id="riskStatus">✅ Safe to proceed</div>
+                                </div>
+
+                                <!-- Detection Components -->
+                                <div class="detection-grid">
+                                    <div class="detection-card" id="simSwapCard">
+                                        <div class="detection-header">
+                                            <span class="detection-icon">📱</span>
+                                            <span class="detection-title">SIM Swap</span>
+                                        </div>
+                                        <div class="detection-value" id="simSwapValue">Verified</div>
+                                        <div class="detection-details" id="simSwapDetails">No recent activity</div>
+                                    </div>
+                                    <div class="detection-card" id="geoCard">
+                                        <div class="detection-header">
+                                            <span class="detection-icon">🌍</span>
+                                            <span class="detection-title">Geolocation</span>
+                                        </div>
+                                        <div class="detection-value" id="geoValue">Checking...</div>
+                                        <div class="detection-details" id="geoDetails">Location verification</div>
+                                    </div>
+                                    <div class="detection-card" id="behaviorCard">
+                                        <div class="detection-header">
+                                            <span class="detection-icon">🧠</span>
+                                            <span class="detection-title">Behavioral</span>
+                                        </div>
+                                        <div class="detection-value" id="behaviorValue">Learning</div>
+                                        <div class="detection-details" id="behaviorDetails">Building profile</div>
+                                    </div>
+                                    <div class="detection-card" id="honeypotCard">
+                                        <div class="detection-header">
+                                            <span class="detection-icon">🍯</span>
+                                            <span class="detection-title">Honeypot</span>
+                                        </div>
+                                        <div class="detection-value" id="honeypotValue">Clear</div>
+                                        <div class="detection-details" id="honeypotDetails">Human verified</div>
+                                    </div>
+                                </div>
+
+                                <!-- Live Behavioral Metrics -->
+                                <div class="behavioral-dashboard">
+                                    <h4>Live Behavioral Metrics</h4>
+                                    <div class="metrics-display">
+                                        <div class="metric-item">
+                                            <span class="metric-name">Typing Speed:</span>
+                                            <span class="metric-value" id="liveTypingSpeed">-- WPM</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-name">Dwell Time:</span>
+                                            <span class="metric-value" id="liveDwellTime">-- ms</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-name">Flight Time:</span>
+                                            <span class="metric-value" id="liveFlightTime">-- ms</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-name">Rhythm Score:</span>
+                                            <span class="metric-value" id="liveRhythmScore">--</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-name">Mouse Activity:</span>
+                                            <span class="metric-value" id="liveMouseActivity">-- moves</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-name">Form Progress:</span>
+                                            <span class="metric-value" id="liveFormProgress">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biometric Authentication Section -->
+        <section id="authentication" class="section">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Advanced Biometric Authentication</h1>
+                    <p class="text-secondary">Multi-factor authentication with behavioral verification</p>
+                </div>
+
+                <div class="auth-system">
+                    <div class="auth-flow">
+                        <div class="card">
+                            <div class="card__body">
+                                <div class="auth-progress">
+                                    <div class="progress-step active" id="step1">1</div>
+                                    <div class="progress-line"></div>
+                                    <div class="progress-step" id="step2">2</div>
+                                    <div class="progress-line"></div>
+                                    <div class="progress-step" id="step3">3</div>
+                                </div>
+
+                                <div class="auth-content">
+                                    <div class="auth-stage active" id="stage1">
+                                        <h3>User Identification</h3>
+                                        <div class="form-group">
+                                            <label class="form-label">Username or Email</label>
+                                            <input type="text" class="form-control" id="authUsername" placeholder="Enter your credentials">
+                                        </div>
+                                        <button class="btn btn--primary" onclick="proceedToAuth()">Continue</button>
+                                    </div>
+
+                                    <div class="auth-stage" id="stage2">
+                                        <h3>Biometric Verification</h3>
+                                        <div class="biometric-methods">
+                                            <div class="biometric-method" onclick="authenticateWithBiometric('fingerprint')">
+                                                <div class="biometric-icon">👆</div>
+                                                <div class="biometric-name">Fingerprint</div>
+                                                <div class="biometric-status">Ready</div>
+                                            </div>
+                                            <div class="biometric-method" onclick="authenticateWithBiometric('face')">
+                                                <div class="biometric-icon">👤</div>
+                                                <div class="biometric-name">Face Recognition</div>
+                                                <div class="biometric-status">Ready</div>
+                                            </div>
+                                            <div class="biometric-method" onclick="authenticateWithBiometric('voice')">
+                                                <div class="biometric-icon">🎤</div>
+                                                <div class="biometric-name">Voice Print</div>
+                                                <div class="biometric-status">Ready</div>
+                                            </div>
+                                        </div>
+                                        <div class="auth-progress-info" id="authProgressInfo">
+                                            Select a biometric method to continue
+                                        </div>
+                                    </div>
+
+                                    <div class="auth-stage" id="stage3">
+                                        <h3>Authentication Complete</h3>
+                                        <div class="auth-success">
+                                            <div class="success-icon">✅</div>
+                                            <div class="success-message">Successfully authenticated</div>
+                                            <div class="auth-details" id="authDetails">
+                                                <!-- Authentication details will be populated -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="auth-monitoring">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>🔒 Security Monitoring</h3>
+                                
+                                <div class="security-panel">
+                                    <div class="security-item">
+                                        <div class="security-label">Cryptographic Challenge</div>
+                                        <div class="security-value" id="cryptoChallenge">Generating...</div>
+                                    </div>
+                                    <div class="security-item">
+                                        <div class="security-label">Device Trust Score</div>
+                                        <div class="security-value" id="deviceTrust">Calculating...</div>
+                                    </div>
+                                    <div class="security-item">
+                                        <div class="security-label">Network Security</div>
+                                        <div class="security-value" id="networkSecurity">Verified</div>
+                                    </div>
+                                    <div class="security-item">
+                                        <div class="security-label">Session Risk</div>
+                                        <div class="security-value" id="sessionRisk">Low</div>
+                                    </div>
+                                </div>
+
+                                <div class="device-info">
+                                    <h4>Device Fingerprint</h4>
+                                    <div class="device-details" id="deviceDetails">
+                                        <!-- Device details will be populated -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ML Analytics Section -->
+        <section id="analytics" class="section">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Machine Learning Analytics</h1>
+                    <p class="text-secondary">Advanced fraud detection insights and model performance</p>
+                </div>
+
+                <div class="analytics-dashboard">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>🤖 Model Performance Dashboard</h3>
+                            <div class="model-controls">
+                                <select class="form-control" id="modelSelector">
+                                    <option value="all">All Models</option>
+                                    <option value="random_forest">Random Forest</option>
+                                    <option value="gradient_boosting">Gradient Boosting</option>
+                                    <option value="neural_network">Neural Network</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="model-grid">
+                            <div class="model-card">
+                                <div class="model-name">Random Forest</div>
+                                <div class="model-accuracy" id="rfAccuracy">94.5%</div>
+                                <div class="model-status active">Active</div>
+                            </div>
+                            <div class="model-card">
+                                <div class="model-name">Gradient Boosting</div>
+                                <div class="model-accuracy" id="gbAccuracy">96.2%</div>
+                                <div class="model-status active">Active</div>
+                            </div>
+                            <div class="model-card">
+                                <div class="model-name">Neural Network</div>
+                                <div class="model-accuracy" id="nnAccuracy">91.8%</div>
+                                <div class="model-status training">Training</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>📊 Feature Importance</h3>
+                        </div>
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="featureImportanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>📈 Fraud Detection Timeline</h3>
+                        </div>
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="fraudTimelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>🧠 Case-Based Reasoning</h3>
+                        </div>
+                        <div class="cbr-dashboard">
+                            <div class="cbr-stats">
+                                <div class="cbr-stat">
+                                    <div class="stat-value" id="cbrCases">15,420</div>
+                                    <div class="stat-label">Total Cases</div>
+                                </div>
+                                <div class="cbr-stat">
+                                    <div class="stat-value" id="cbrAccuracy">84.2%</div>
+                                    <div class="stat-label">Accuracy</div>
+                                </div>
+                                <div class="cbr-stat">
+                                    <div class="stat-value" id="cbrRetrievalTime">0.08s</div>
+                                    <div class="stat-label">Retrieval Time</div>
+                                </div>
+                            </div>
+                            <div class="recent-cases" id="recentCases">
+                                <!-- Recent cases will be populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Control Section -->
+        <section id="admin" class="section">
+            <div class="container">
+                <div class="page-header">
+                    <h1>System Administration</h1>
+                    <p class="text-secondary">Advanced fraud detection system control panel</p>
+                </div>
+
+                <div class="admin-dashboard">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>⚙️ System Configuration</h3>
+                        </div>
+                        <div class="config-panel">
+                            <div class="config-section">
+                                <h4>Risk Thresholds</h4>
+                                <div class="threshold-controls">
+                                    <div class="threshold-item">
+                                        <label>Block Threshold:</label>
+                                        <input type="range" min="0.5" max="1.0" step="0.01" value="0.7" id="blockThreshold">
+                                        <span id="blockValue">0.70</span>
+                                    </div>
+                                    <div class="threshold-item">
+                                        <label>Review Threshold:</label>
+                                        <input type="range" min="0.3" max="0.8" step="0.01" value="0.6" id="reviewThreshold">
+                                        <span id="reviewValue">0.60</span>
+                                    </div>
+                                    <div class="threshold-item">
+                                        <label>Monitor Threshold:</label>
+                                        <input type="range" min="0.1" max="0.5" step="0.01" value="0.4" id="monitorThreshold">
+                                        <span id="monitorValue">0.40</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-section">
+                                <h4>Model Weights</h4>
+                                <div class="weight-controls">
+                                    <div class="weight-item">
+                                        <label>SIM Swap Detection:</label>
+                                        <input type="range" min="0" max="1" step="0.05" value="0.35" id="simSwapWeight">
+                                        <span id="simSwapWeightValue">35%</span>
+                                    </div>
+                                    <div class="weight-item">
+                                        <label>Geolocation Analysis:</label>
+                                        <input type="range" min="0" max="1" step="0.05" value="0.25" id="geoWeight">
+                                        <span id="geoWeightValue">25%</span>
+                                    </div>
+                                    <div class="weight-item">
+                                        <label>Behavioral Biometrics:</label>
+                                        <input type="range" min="0" max="1" step="0.05" value="0.20" id="behaviorWeight">
+                                        <span id="behaviorWeightValue">20%</span>
+                                    </div>
+                                    <div class="weight-item">
+                                        <label>Device Fingerprint:</label>
+                                        <input type="range" min="0" max="1" step="0.05" value="0.15" id="deviceWeight">
+                                        <span id="deviceWeightValue">15%</span>
+                                    </div>
+                                    <div class="weight-item">
+                                        <label>Honeypot Detection:</label>
+                                        <input type="range" min="0" max="1" step="0.05" value="0.05" id="honeypotWeight">
+                                        <span id="honeypotWeightValue">5%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>📊 System Statistics</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalUsers">45,782</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="fraudPrevented">1,247</div>
+                                <div class="stat-label">Fraud Prevented</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="systemUptime">99.97%</div>
+                                <div class="stat-label">System Uptime</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="dataProcessed">2.3TB</div>
+                                <div class="stat-label">Data Processed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>🎛️ System Controls</h3>
+                        </div>
+                        <div class="control-panel">
+                            <div class="control-section">
+                                <h4>Model Management</h4>
+                                <div class="control-buttons">
+                                    <button class="btn btn--primary" onclick="retrainModels()">🔄 Retrain Models</button>
+                                    <button class="btn btn--secondary" onclick="exportModels()">📤 Export Models</button>
+                                    <button class="btn btn--outline" onclick="validateModels()">✅ Validate Models</button>
+                                </div>
+                            </div>
+                            <div class="control-section">
+                                <h4>Data Management</h4>
+                                <div class="control-buttons">
+                                    <button class="btn btn--primary" onclick="refreshData()">🔄 Refresh Data</button>
+                                    <button class="btn btn--secondary" onclick="backupData()">💾 Backup Data</button>
+                                    <button class="btn btn--outline" onclick="clearLogs()">🗑️ Clear Logs</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Dynamic Modal System -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="alertModalTitle">Alert Details</h3>
+                <button class="modal-close" onclick="closeModal('alertModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="alertModalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>System Configuration</h3>
+                <button class="modal-close" onclick="closeModal('configModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="configModalBody">
+                <!-- Configuration content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

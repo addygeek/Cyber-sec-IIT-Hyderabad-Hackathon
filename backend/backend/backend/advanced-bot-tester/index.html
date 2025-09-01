@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Bot Authentication Testing Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-color-scheme="dark">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="header-title">Advanced Bot Authentication Testing Platform</h1>
+                <p class="header-subtitle">Professional-Grade Security Testing Framework</p>
+            </div>
+            <div class="header-controls">
+                <button id="theme-toggle" class="btn btn--outline btn--sm">🌙 Dark</button>
+                <button id="help-toggle" class="btn btn--outline btn--sm">❓ Help</button>
+            </div>
+        </div>
+        <div class="threat-meter">
+            <div class="threat-label">Global Threat Level</div>
+            <div class="threat-bar">
+                <div id="threat-fill" class="threat-fill"></div>
+                <div id="threat-text" class="threat-text">LOW</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Navigation Tabs -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="tab-button" data-tab="configuration">⚙️ Configuration</button>
+            <button class="tab-button" data-tab="wordlists">📝 Wordlists</button>
+            <button class="tab-button" data-tab="attacks">🎯 Attacks</button>
+            <button class="tab-button" data-tab="analysis">🔍 Analysis</button>
+            <button class="tab-button" data-tab="reports">📈 Reports</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div class="dashboard-grid">
+                <!-- Real-time Statistics -->
+                <div class="stat-widget">
+                    <h3 class="widget-title">Live Statistics</h3>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <span class="stat-label">Attacks Running</span>
+                            <span id="attacks-running" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Success Rate</span>
+                            <span id="global-success-rate" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Detection Risk</span>
+                            <span id="global-detection-risk" class="stat-value">LOW</span>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 200px;">
+                        <canvas id="performance-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Target Management -->
+                <div class="target-widget">
+                    <h3 class="widget-title">Target Management</h3>
+                    <div class="target-list" id="target-list">
+                        <div class="target-item active">
+                            <span class="target-url">https://demo.testfire.net/login.jsp</span>
+                            <span class="target-status status--info">Ready</span>
+                        </div>
+                    </div>
+                    <div class="target-actions">
+                        <button id="add-target" class="btn btn--primary btn--sm">+ Add Target</button>
+                        <button id="import-targets" class="btn btn--outline btn--sm">📁 Import</button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="actions-widget">
+                    <h3 class="widget-title">Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button id="quick-spray" class="action-btn">
+                            <span class="action-icon">💨</span>
+                            <span class="action-label">Password Spray</span>
+                        </button>
+                        <button id="quick-brute" class="action-btn">
+                            <span class="action-icon">🔨</span>
+                            <span class="action-label">Brute Force</span>
+                        </button>
+                        <button id="quick-hybrid" class="action-btn">
+                            <span class="action-icon">🔀</span>
+                            <span class="action-label">Hybrid Attack</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Historical Data -->
+                <div class="history-widget">
+                    <h3 class="widget-title">Attack History</h3>
+                    <div class="chart-container" style="position: relative; height: 200px;">
+                        <canvas id="history-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Tab -->
+        <div id="configuration-tab" class="tab-content">
+            <div class="config-grid">
+                <!-- Target Configuration -->
+                <div class="config-section">
+                    <h3 class="section-title">Target Configuration</h3>
+                    <div class="form-group">
+                        <label class="form-label">Target URL</label>
+                        <input type="url" id="target-url" class="form-control" placeholder="https://example.com/login">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target Profile</label>
+                        <select id="target-profile" class="form-control">
+                            <option value="web">Web Application</option>
+                            <option value="api">REST API</option>
+                            <option value="ssh">SSH Service</option>
+                            <option value="ftp">FTP Service</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Login Form Fields</label>
+                        <div class="field-inputs">
+                            <input type="text" id="username-field" class="form-control" placeholder="Username field name" value="username">
+                            <input type="text" id="password-field" class="form-control" placeholder="Password field name" value="password">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack Mode Configuration -->
+                <div class="config-section">
+                    <h3 class="section-title">Attack Configuration</h3>
+                    <div class="form-group">
+                        <label class="form-label">Attack Mode</label>
+                        <select id="attack-mode" class="form-control">
+                            <option value="spray">Password Spray</option>
+                            <option value="stuffing">Credential Stuffing</option>
+                            <option value="brute">Brute Force</option>
+                            <option value="dictionary">Dictionary Attack</option>
+                            <option value="hybrid">Hybrid Attack</option>
+                            <option value="custom">Custom Pattern</option>
+                            <option value="rainbow">Rainbow Table</option>
+                            <option value="mask">Mask Attack</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Concurrency Level</label>
+                        <div class="slider-container">
+                            <input type="range" id="concurrency-slider" class="slider" min="1" max="50" value="5">
+                            <span id="concurrency-value" class="slider-value">5 threads</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Request Rate (RPS)</label>
+                        <div class="slider-container">
+                            <input type="range" id="rps-slider" class="slider" min="1" max="100" value="10">
+                            <span id="rps-value" class="slider-value">10 RPS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timing Configuration -->
+                <div class="config-section">
+                    <h3 class="section-title">Timing & Evasion</h3>
+                    <div class="form-group">
+                        <label class="form-label">Timing Pattern</label>
+                        <select id="timing-pattern" class="form-control">
+                            <option value="consistent">Consistent (Bot-like)</option>
+                            <option value="random">Random Intervals</option>
+                            <option value="human">Human-like Curves</option>
+                            <option value="burst">Burst Patterns</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Base Delay (ms)</label>
+                        <div class="slider-container">
+                            <input type="range" id="delay-slider" class="slider" min="100" max="10000" value="1000">
+                            <span id="delay-value" class="slider-value">1000ms</span>
+                        </div>
+                    </div>
+                    <div class="evasion-options">
+                        <h4>Evasion Techniques</h4>
+                        <div class="checkbox-grid">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="user-agent-rotation">
+                                <label for="user-agent-rotation">User Agent Rotation</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="proxy-rotation">
+                                <label for="proxy-rotation">Proxy Rotation</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="header-randomization">
+                                <label for="header-randomization">Header Randomization</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="mouse-simulation">
+                                <label for="mouse-simulation">Mouse Movement Simulation</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Management -->
+                <div class="config-section">
+                    <h3 class="section-title">Session Management</h3>
+                    <div class="form-group">
+                        <label class="form-label">Session Persistence</label>
+                        <select id="session-persistence" class="form-control">
+                            <option value="none">No Session Management</option>
+                            <option value="cookies">Cookie-based Sessions</option>
+                            <option value="tokens">Token-based Sessions</option>
+                            <option value="custom">Custom Headers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Maximum Attempts per Target</label>
+                        <input type="number" id="max-attempts" class="form-control" min="1" max="10000" value="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wordlists Tab -->
+        <div id="wordlists-tab" class="tab-content">
+            <div class="wordlist-grid">
+                <!-- Password Management -->
+                <div class="wordlist-section">
+                    <h3 class="section-title">Password Lists</h3>
+                    <div class="wordlist-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Passwords</span>
+                            <span id="total-passwords" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Active List</span>
+                            <span id="active-password-list" class="stat-value">Default</span>
+                        </div>
+                    </div>
+                    <div class="wordlist-actions">
+                        <input type="file" id="password-file-input" accept=".txt,.csv" style="display: none;">
+                        <button id="import-passwords" class="btn btn--primary btn--sm">📁 Import Passwords</button>
+                        <button id="export-passwords" class="btn btn--outline btn--sm">💾 Export</button>
+                        <button id="generate-passwords" class="btn btn--secondary btn--sm">🔧 Generate</button>
+                    </div>
+                    <div class="wordlist-preview">
+                        <div id="password-preview" class="preview-container"></div>
+                    </div>
+                </div>
+
+                <!-- Username Management -->
+                <div class="wordlist-section">
+                    <h3 class="section-title">Username Lists</h3>
+                    <div class="wordlist-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Usernames</span>
+                            <span id="total-usernames" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Active List</span>
+                            <span id="active-username-list" class="stat-value">Default</span>
+                        </div>
+                    </div>
+                    <div class="wordlist-actions">
+                        <input type="file" id="username-file-input" accept=".txt,.csv" style="display: none;">
+                        <button id="import-usernames" class="btn btn--primary btn--sm">📁 Import Usernames</button>
+                        <button id="export-usernames" class="btn btn--outline btn--sm">💾 Export</button>
+                        <button id="generate-usernames" class="btn btn--secondary btn--sm">🔧 Generate</button>
+                    </div>
+                    <div class="wordlist-preview">
+                        <div id="username-preview" class="preview-container"></div>
+                    </div>
+                </div>
+
+                <!-- Pattern Generator -->
+                <div class="pattern-section">
+                    <h3 class="section-title">Pattern Generator</h3>
+                    <div class="pattern-builder">
+                        <div class="form-group">
+                            <label class="form-label">Base Pattern</label>
+                            <input type="text" id="pattern-input" class="form-control" placeholder="e.g., password{year}, {username}123">
+                        </div>
+                        <div class="pattern-options">
+                            <div class="pattern-row">
+                                <label>Years:</label>
+                                <input type="text" id="years-input" class="form-control" value="2020,2021,2022,2023,2024,2025">
+                            </div>
+                            <div class="pattern-row">
+                                <label>Numbers:</label>
+                                <input type="text" id="numbers-input" class="form-control" value="1,12,123,1234">
+                            </div>
+                            <div class="pattern-row">
+                                <label>Special Chars:</label>
+                                <input type="text" id="specials-input" class="form-control" value="!,!!,@,#,$">
+                            </div>
+                        </div>
+                        <div class="pattern-actions">
+                            <button id="generate-pattern" class="btn btn--primary">Generate from Pattern</button>
+                            <button id="preview-pattern" class="btn btn--outline">Preview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorites & Recent -->
+                <div class="favorites-section">
+                    <h3 class="section-title">Favorites & Recent</h3>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-subtab="favorites">⭐ Favorites</button>
+                        <button class="tab-btn" data-subtab="recent">🕒 Recent</button>
+                    </div>
+                    <div id="favorites-list" class="favorites-list"></div>
+                    <div id="recent-list" class="recent-list hidden"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attacks Tab -->
+        <div id="attacks-tab" class="tab-content">
+            <div class="attacks-grid">
+                <!-- Attack Control Panel -->
+                <div class="attack-control">
+                    <h3 class="section-title">Attack Control Center</h3>
+                    <div class="attack-buttons">
+                        <button id="start-attack" class="btn btn--primary btn--lg">🚀 Start Attack</button>
+                        <button id="pause-attack" class="btn btn--secondary btn--lg" disabled>⏸️ Pause</button>
+                        <button id="stop-attack" class="btn btn--outline btn--lg" disabled>⏹️ Stop</button>
+                        <button id="reset-attack" class="btn btn--outline btn--lg">🔄 Reset</button>
+                    </div>
+                    <div class="attack-progress">
+                        <div class="progress-info">
+                            <span id="progress-text">Ready to start</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Attack Monitor -->
+                <div class="attack-monitor">
+                    <h3 class="section-title">Live Attack Monitor</h3>
+                    <div class="monitor-stats">
+                        <div class="monitor-stat">
+                            <span class="monitor-label">Attempts</span>
+                            <span id="attempts-count" class="monitor-value">0</span>
+                        </div>
+                        <div class="monitor-stat success">
+                            <span class="monitor-label">Successful</span>
+                            <span id="success-count" class="monitor-value">0</span>
+                        </div>
+                        <div class="monitor-stat error">
+                            <span class="monitor-label">Failed</span>
+                            <span id="failed-count" class="monitor-value">0</span>
+                        </div>
+                        <div class="monitor-stat">
+                            <span class="monitor-label">Rate</span>
+                            <span id="current-rate" class="monitor-value">0/s</span>
+                        </div>
+                    </div>
+                    <div class="attack-log-container">
+                        <div class="log-header">
+                            <span>Live Attack Log</span>
+                            <button id="clear-log" class="btn btn--outline btn--sm">Clear</button>
+                        </div>
+                        <div id="attack-log" class="attack-log"></div>
+                    </div>
+                </div>
+
+                <!-- Multi-Target Coordination -->
+                <div class="multi-target">
+                    <h3 class="section-title">Multi-Target Coordination</h3>
+                    <div class="target-coordination">
+                        <div class="coordination-option">
+                            <input type="radio" id="sequential" name="coordination" value="sequential" checked>
+                            <label for="sequential">Sequential Attacks</label>
+                        </div>
+                        <div class="coordination-option">
+                            <input type="radio" id="parallel" name="coordination" value="parallel">
+                            <label for="parallel">Parallel Attacks</label>
+                        </div>
+                        <div class="coordination-option">
+                            <input type="radio" id="round-robin" name="coordination" value="round-robin">
+                            <label for="round-robin">Round Robin</label>
+                        </div>
+                    </div>
+                    <div class="target-status-list" id="target-status-list"></div>
+                </div>
+
+                <!-- Successful Credentials -->
+                <div class="credentials-found">
+                    <h3 class="section-title">Successful Credentials</h3>
+                    <div id="credentials-list" class="credentials-list">
+                        <div class="no-credentials">No successful credentials yet</div>
+                    </div>
+                    <div class="credentials-actions">
+                        <button id="export-credentials" class="btn btn--primary btn--sm">Export Credentials</button>
+                        <button id="test-credentials" class="btn btn--outline btn--sm">Test Found</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Tab -->
+        <div id="analysis-tab" class="tab-content">
+            <div class="analysis-grid">
+                <!-- Detection Analysis -->
+                <div class="detection-analysis">
+                    <h3 class="section-title">Detection Analysis</h3>
+                    <div class="detection-meter">
+                        <div class="meter-container">
+                            <div id="detection-fill" class="meter-fill"></div>
+                            <div id="detection-percentage" class="meter-text">0%</div>
+                        </div>
+                        <div class="detection-label">Detection Probability</div>
+                    </div>
+                    <div class="risk-assessment">
+                        <div class="risk-level">
+                            <span class="risk-label">Risk Level:</span>
+                            <span id="risk-level" class="risk-value low">LOW</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Behavioral Analysis -->
+                <div class="behavioral-analysis">
+                    <h3 class="section-title">Behavioral Pattern Analysis</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="behavior-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detection Techniques -->
+                <div class="detection-techniques">
+                    <h3 class="section-title">Detection Techniques</h3>
+                    <div class="techniques-list" id="techniques-list"></div>
+                </div>
+
+                <!-- Evasion Assessment -->
+                <div class="evasion-assessment">
+                    <h3 class="section-title">Evasion Effectiveness</h3>
+                    <div class="evasion-list" id="evasion-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports-tab" class="tab-content">
+            <div class="reports-grid">
+                <!-- Report Generation -->
+                <div class="report-generator">
+                    <h3 class="section-title">Report Generation</h3>
+                    <div class="report-options">
+                        <div class="form-group">
+                            <label class="form-label">Report Type</label>
+                            <select id="report-type" class="form-control">
+                                <option value="executive">Executive Summary</option>
+                                <option value="technical">Technical Details</option>
+                                <option value="compliance">Compliance Report</option>
+                                <option value="vulnerability">Vulnerability Assessment</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Export Format</label>
+                            <div class="format-options">
+                                <button id="export-json" class="btn btn--outline btn--sm">📄 JSON</button>
+                                <button id="export-csv" class="btn btn--outline btn--sm">📊 CSV</button>
+                                <button id="export-html" class="btn btn--outline btn--sm">🌐 HTML</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button id="generate-report" class="btn btn--primary">Generate Report</button>
+                        <button id="schedule-report" class="btn btn--secondary">Schedule Report</button>
+                    </div>
+                </div>
+
+                <!-- Attack History -->
+                <div class="attack-history">
+                    <h3 class="section-title">Attack History</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="history-timeline-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="performance-metrics">
+                    <h3 class="section-title">Performance Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">Total Attacks</span>
+                            <span id="total-attacks" class="metric-value">0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Success Rate</span>
+                            <span id="overall-success-rate" class="metric-value">0%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Avg Detection Time</span>
+                            <span id="avg-detection-time" class="metric-value">N/A</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Most Effective Attack</span>
+                            <span id="best-attack-mode" class="metric-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparative Analysis -->
+                <div class="comparative-analysis">
+                    <h3 class="section-title">Comparative Analysis</h3>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-target-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Target</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Target URL</label>
+                    <input type="url" id="new-target-url" class="form-control" placeholder="https://example.com/login">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Name</label>
+                    <input type="text" id="new-target-name" class="form-control" placeholder="Friendly name for target">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Type</label>
+                    <select id="new-target-type" class="form-control">
+                        <option value="web">Web Application</option>
+                        <option value="api">REST API</option>
+                        <option value="ssh">SSH Service</option>
+                        <option value="ftp">FTP Service</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-target" class="btn btn--outline">Cancel</button>
+                <button id="save-target" class="btn btn--primary">Add Target</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Help & Documentation</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-content">
+                    <h4>🎯 Getting Started</h4>
+                    <p>This platform simulates bot behavior for security testing purposes. Always ensure you have permission to test target systems.</p>
+                    
+                    <h4>⚙️ Configuration</h4>
+                    <ul>
+                        <li><strong>Attack Modes:</strong> Choose from various attack strategies</li>
+                        <li><strong>Timing Patterns:</strong> Control request timing and behavior</li>
+                        <li><strong>Evasion Techniques:</strong> Enable techniques to avoid detection</li>
+                    </ul>
+
+                    <h4>📝 Wordlists</h4>
+                    <ul>
+                        <li><strong>Import:</strong> Upload custom password/username lists</li>
+                        <li><strong>Generate:</strong> Create patterns using variables and rules</li>
+                        <li><strong>Favorites:</strong> Save frequently used credentials</li>
+                    </ul>
+
+                    <h4>🚨 Ethical Use Warning</h4>
+                    <p class="warning-text">This tool is for authorized security testing only. Unauthorized use against systems you don't own is illegal and unethical.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

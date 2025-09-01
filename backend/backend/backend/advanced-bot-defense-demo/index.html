@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Security Operations Center - Bot Attack Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h2>🛡️ Advanced Security Operations Center</h2>
+                <div class="threat-indicator" id="threat-indicator">
+                    <span class="threat-level" id="threat-level">LOW</span>
+                    <div class="threat-pulse"></div>
+                </div>
+            </div>
+            <div class="navbar-nav">
+                <button class="btn btn--outline btn--sm" id="nav-register">Register</button>
+                <button class="btn btn--outline btn--sm" id="nav-login">Login</button>
+                <button class="btn btn--outline btn--sm" id="nav-dashboard" style="display: none;">Dashboard</button>
+                <button class="btn btn--outline btn--sm" id="nav-attacks">Attack Simulation</button>
+                <button class="btn btn--outline btn--sm" id="nav-analytics">Analytics</button>
+                <button class="btn btn--outline btn--sm" id="nav-data-management">Data</button>
+                <button class="btn btn--secondary btn--sm" id="nav-logout" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Registration Page -->
+    <div id="registration-page" class="page">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1>Create Account</h1>
+                        <p class="text-secondary">Register with passwordless authentication</p>
+                    </div>
+                    
+                    <form id="registration-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="reg-username" class="form-label">Username</label>
+                            <input type="text" id="reg-username" class="form-control" placeholder="Enter your username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="reg-email" class="form-label">Email</label>
+                            <input type="email" id="reg-email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn--primary btn--full-width">Register with Biometric</button>
+                    </form>
+                    
+                    <!-- Behavioral Metrics Display -->
+                    <div class="metrics-card" id="reg-metrics" style="display: none;">
+                        <h4>Behavioral Baseline Capture</h4>
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Flight Time Avg:</span>
+                                <span class="metric-value" id="reg-flight-avg">0ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Dwell Time Avg:</span>
+                                <span class="metric-value" id="reg-dwell-avg">0ms</span>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 200px; position: relative;">
+                            <canvas id="reg-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div id="reg-status" class="status-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1>Login</h1>
+                        <p class="text-secondary">Authenticate with your biometric</p>
+                    </div>
+                    
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-username" class="form-label">Username</label>
+                            <input type="text" id="login-username" class="form-control" placeholder="Enter your username" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn--primary btn--full-width">Login with Biometric</button>
+                    </form>
+                    
+                    <!-- Behavioral Analysis Display -->
+                    <div class="metrics-card" id="login-metrics" style="display: none;">
+                        <h4>Behavioral Analysis</h4>
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Current Flight Avg:</span>
+                                <span class="metric-value" id="login-flight-current">0ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Baseline Flight Avg:</span>
+                                <span class="metric-value" id="login-flight-baseline">0ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Current Dwell Avg:</span>
+                                <span class="metric-value" id="login-dwell-current">0ms</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Baseline Dwell Avg:</span>
+                                <span class="metric-value" id="login-dwell-baseline">0ms</span>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-score" id="risk-score-display">
+                            <span class="risk-label">Risk Score:</span>
+                            <span class="risk-value" id="risk-score-value">0%</span>
+                            <div class="risk-bar">
+                                <div class="risk-fill" id="risk-fill"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container" style="height: 250px; position: relative;">
+                            <canvas id="login-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div id="login-status" class="status-message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Security Dashboard</h1>
+                <p class="text-secondary">Real-time security monitoring and user profile</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Profile Card -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Profile Information</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="profile-info">
+                            <div class="profile-item">
+                                <strong>Username:</strong>
+                                <span id="profile-username">-</span>
+                            </div>
+                            <div class="profile-item">
+                                <strong>Email:</strong>
+                                <span id="profile-email">-</span>
+                            </div>
+                            <div class="profile-item">
+                                <strong>Account Created:</strong>
+                                <span id="profile-created">-</span>
+                            </div>
+                            <div class="profile-item">
+                                <strong>WebAuthn Status:</strong>
+                                <span class="status status--success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Behavioral Baseline Card -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Behavioral Baseline</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="baseline-metrics">
+                            <div class="baseline-item">
+                                <strong>Flight Time Average:</strong>
+                                <span id="baseline-flight">0ms</span>
+                            </div>
+                            <div class="baseline-item">
+                                <strong>Dwell Time Average:</strong>
+                                <span id="baseline-dwell">0ms</span>
+                            </div>
+                            <div class="baseline-item">
+                                <strong>Typing Pattern:</strong>
+                                <span id="baseline-pattern">Normal</span>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 200px; position: relative; margin-top: 16px;">
+                            <canvas id="baseline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Attacks Card -->
+                <div class="card dashboard-full-width">
+                    <div class="card__header">
+                        <h3>Recent Security Events</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="attack-summary" id="attack-summary">
+                            <div class="summary-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Attacks Blocked Today:</span>
+                                    <span class="stat-value" id="attacks-blocked">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Current Threat Level:</span>
+                                    <span class="stat-value" id="current-threat-level">LOW</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="login-history" id="login-history">
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <strong>Current Session</strong>
+                                    <span class="history-time" id="current-session-time">Just now</span>
+                                </div>
+                                <span class="status status--success">Success</span>
+                                <span class="risk-badge risk-low">Low Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Simulation Page -->
+    <div id="attacks-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="soc-header">
+                <h1>🚨 Bot Attack Simulation Center</h1>
+                <p class="text-secondary">Advanced threat simulation and detection testing</p>
+            </div>
+            
+            <div class="soc-grid">
+                <!-- Attack Controls Panel -->
+                <div class="card attack-controls-card">
+                    <div class="card__header">
+                        <h3>Attack Control Panel</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="form-group">
+                            <label class="form-label">Attack Type</label>
+                            <select id="attack-type-select" class="form-control">
+                                <option value="">Select Attack Type</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Attack Speed (ms)</label>
+                            <input type="range" id="attack-speed" class="speed-slider" min="1" max="100" value="10">
+                            <span class="speed-value" id="speed-value">10ms</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Attack Intensity</label>
+                            <select id="attack-intensity" class="form-control">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="extreme">Extreme</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Duration (seconds)</label>
+                            <input type="range" id="attack-duration" class="duration-slider" min="5" max="120" value="30">
+                            <span class="duration-value" id="duration-value">30s</span>
+                        </div>
+                        
+                        <div class="attack-buttons">
+                            <button class="btn btn--primary" id="start-attack">Start Attack</button>
+                            <button class="btn btn--secondary" id="stop-attack" disabled>Stop Attack</button>
+                            <button class="btn btn--outline" id="run-scenario">Run Scenario</button>
+                        </div>
+                        
+                        <div class="attack-scenarios">
+                            <h4>Quick Scenarios</h4>
+                            <div class="scenario-buttons">
+                                <button class="btn btn--sm btn--outline scenario-btn" data-scenario="credential_stuffing">Credential Stuffing</button>
+                                <button class="btn btn--sm btn--outline scenario-btn" data-scenario="registration_spam">Registration Spam</button>
+                                <button class="btn btn--sm btn--outline scenario-btn" data-scenario="session_hijacking">Session Hijacking</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Real-time Attack Monitor -->
+                <div class="card attack-monitor-card">
+                    <div class="card__header">
+                        <h3>Real-time Attack Monitor</h3>
+                        <div class="attack-status">
+                            <span class="status-indicator" id="attack-status-indicator">IDLE</span>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="attack-stats">
+                            <div class="stat-row">
+                                <div class="stat-item">
+                                    <span class="stat-label">Attacks Attempted:</span>
+                                    <span class="stat-value" id="attacks-attempted">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Attacks Blocked:</span>
+                                    <span class="stat-value" id="attacks-blocked-count">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-row">
+                                <div class="stat-item">
+                                    <span class="stat-label">Success Rate:</span>
+                                    <span class="stat-value" id="attack-success-rate">0%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Current Speed:</span>
+                                    <span class="stat-value" id="current-attack-speed">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container" style="height: 200px; position: relative;">
+                            <canvas id="attack-timeline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attack Log -->
+                <div class="card attack-log-card dashboard-full-width">
+                    <div class="card__header">
+                        <h3>Attack Event Log</h3>
+                        <div class="log-controls">
+                            <button class="btn btn--sm btn--outline" id="clear-logs">Clear Logs</button>
+                            <button class="btn btn--sm btn--outline" id="export-logs">Export CSV</button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="attack-log" id="attack-log">
+                            <div class="log-header">
+                                <span>Timestamp</span>
+                                <span>Attack Type</span>
+                                <span>Target</span>
+                                <span>Status</span>
+                                <span>Risk Score</span>
+                                <span>Source IP</span>
+                            </div>
+                            <div class="log-empty">No attack events recorded</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Page -->
+    <div id="analytics-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="analytics-header">
+                <h1>📊 Security Analytics Dashboard</h1>
+                <p class="text-secondary">Comprehensive attack pattern analysis and threat intelligence</p>
+            </div>
+            
+            <div class="analytics-grid">
+                <!-- Attack Type Distribution -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Attack Type Distribution</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="attack-type-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attack Heatmap -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Attack Heatmap (24h)</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="attack-heatmap-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Protection Effectiveness -->
+                <div class="card dashboard-full-width">
+                    <div class="card__header">
+                        <h3>Protection Effectiveness Over Time</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="effectiveness-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Overall Block Rate:</span>
+                                <span class="stat-value" id="overall-block-rate">95.8%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">False Positive Rate:</span>
+                                <span class="stat-value" id="false-positive-rate">0.2%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Avg Response Time:</span>
+                                <span class="stat-value" id="avg-response-time">12ms</span>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 300px; position: relative;">
+                            <canvas id="effectiveness-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Management Page -->
+    <div id="data-management-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="data-header">
+                <h1>💾 Data Management Center</h1>
+                <p class="text-secondary">Manage stored data, export analytics, and system configuration</p>
+            </div>
+            
+            <div class="data-grid">
+                <!-- Data Overview -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Data Overview</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="data-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Registered Users:</span>
+                                <span class="stat-value" id="total-users">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Attack Events:</span>
+                                <span class="stat-value" id="total-attacks">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Storage Used:</span>
+                                <span class="stat-value" id="storage-used">0 KB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Controls -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Data Controls</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="data-controls">
+                            <button class="btn btn--primary btn--full-width" id="export-all-data">Export All Data</button>
+                            <div class="file-input-group">
+                                <input type="file" id="import-data-file" accept=".json" style="display: none;">
+                                <button class="btn btn--outline btn--full-width" id="import-data">Import Data</button>
+                            </div>
+                            <button class="btn btn--secondary btn--full-width" id="backup-data">Create Backup</button>
+                            <button class="btn btn--outline btn--full-width" id="clear-attack-logs">Clear Attack Logs</button>
+                            <button class="btn btn--outline btn--full-width" id="clear-user-data">Clear User Data</button>
+                            <button class="btn btn--outline btn--full-width" style="color: var(--color-error); border-color: var(--color-error);" id="clear-all-data">Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Configuration -->
+                <div class="card dashboard-full-width">
+                    <div class="card__header">
+                        <h3>Security Configuration</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="config-grid">
+                            <div class="config-section">
+                                <h4>Detection Thresholds</h4>
+                                <div class="form-group">
+                                    <label class="form-label">Bot Detection Threshold</label>
+                                    <input type="range" id="bot-threshold" class="form-control" min="0" max="1" step="0.1" value="0.8">
+                                    <span id="bot-threshold-value">0.8</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Risk Score High Threshold</label>
+                                    <input type="range" id="risk-high-threshold" class="form-control" min="0" max="1" step="0.1" value="0.7">
+                                    <span id="risk-high-threshold-value">0.7</span>
+                                </div>
+                            </div>
+                            <div class="config-section">
+                                <h4>Auto-Response Settings</h4>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <input type="checkbox" id="auto-block" checked> Auto-block detected bots
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Max Failed Attempts</label>
+                                    <input type="number" id="max-failed-attempts" class="form-control" min="1" max="10" value="3">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Lockout Duration (seconds)</label>
+                                    <input type="number" id="lockout-duration" class="form-control" min="60" max="3600" value="300">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary" id="save-config">Save Configuration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <h3 id="loading-text">Processing...</h3>
+                <p id="loading-subtext">Please follow the prompts on your device</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="modal hidden">
+        <div class="modal-content alert-modal">
+            <div class="alert-header">
+                <h3 id="alert-title">Security Alert</h3>
+                <button class="close-btn" id="close-alert">×</button>
+            </div>
+            <div class="alert-body">
+                <p id="alert-message">Attack detected!</p>
+            </div>
+            <div class="alert-footer">
+                <button class="btn btn--primary" id="alert-acknowledge">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

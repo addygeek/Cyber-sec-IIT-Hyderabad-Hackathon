@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Biometric Authentication Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Header -->
+        <header class="app-header">
+            <div class="container">
+                <h1 class="app-title">🔐 Fixed Biometric Authentication Platform</h1>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="btn btn--outline btn--sm" aria-label="Toggle theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <button id="toggle-logs" class="btn btn--outline btn--sm">
+                        <span>📋 Debug</span>
+                    </button>
+                    <button id="storage-status" class="btn btn--outline btn--sm">
+                        <span id="storage-indicator">💾</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Debug Panel -->
+        <div id="debug-panel" class="debug-panel hidden">
+            <div class="container">
+                <div class="debug-header">
+                    <h3>🔍 Debug Console & Storage Status</h3>
+                    <div class="debug-actions">
+                        <button id="clear-storage" class="btn btn--outline btn--sm">Clear Storage</button>
+                        <button id="clear-logs" class="btn btn--outline btn--sm">Clear Logs</button>
+                        <button id="export-logs" class="btn btn--outline btn--sm">Export</button>
+                    </div>
+                </div>
+                <div class="debug-tabs">
+                    <button id="tab-logs" class="debug-tab active">Logs</button>
+                    <button id="tab-storage" class="debug-tab">Storage</button>
+                    <button id="tab-users" class="debug-tab">Users</button>
+                </div>
+                <div id="debug-content">
+                    <div id="debug-logs" class="debug-output debug-tab-content active"></div>
+                    <div id="debug-storage" class="debug-output debug-tab-content"></div>
+                    <div id="debug-users" class="debug-output debug-tab-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen active">
+                <div class="container">
+                    <!-- Storage Status Panel -->
+                    <div class="storage-status-panel">
+                        <h2>💾 Storage & Session Status</h2>
+                        <div class="status-grid">
+                            <div class="status-card">
+                                <div class="status-icon">🗄️</div>
+                                <div class="status-content">
+                                    <h4>Storage Type</h4>
+                                    <p id="storage-type-status">Checking...</p>
+                                </div>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-icon">👥</div>
+                                <div class="status-content">
+                                    <h4>Registered Users</h4>
+                                    <p id="user-count-status">0</p>
+                                </div>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-icon">🔐</div>
+                                <div class="status-content">
+                                    <h4>WebAuthn Status</h4>
+                                    <p id="webauthn-status-display">Checking...</p>
+                                </div>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-icon">📲</div>
+                                <div class="status-content">
+                                    <h4>Biometric Support</h4>
+                                    <p id="biometric-status-display">Checking...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Welcome Hero Section -->
+                    <div class="welcome-hero">
+                        <h2>Welcome to Fixed Biometric Authentication</h2>
+                        <p class="hero-description">Experience fully working passwordless authentication with comprehensive error handling, localStorage integration, and realistic biometric simulation when WebAuthn is unavailable.</p>
+                        
+                        <div class="security-features">
+                            <div class="feature-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">🔒</div>
+                                    <h3>WebAuthn + Fallback</h3>
+                                    <p>Real biometrics with simulated backup</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">💾</div>
+                                    <h3>localStorage Integration</h3>
+                                    <p>Persistent accounts with fallback storage</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">🛡️</div>
+                                    <h3>Error Recovery</h3>
+                                    <p>Graceful handling of all failure scenarios</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">🎭</div>
+                                    <h3>Biometric Simulation</h3>
+                                    <p>Realistic authentication experience</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button id="register-btn" class="btn btn--primary btn--lg">Create Account</button>
+                            <button id="signin-btn" class="btn btn--outline btn--lg">Sign In</button>
+                        </div>
+
+                        <div id="browser-support" class="browser-status">
+                            <div class="status-indicator">
+                                <span id="webauthn-status" class="status status--info">Checking WebAuthn support...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Screen -->
+            <div id="register-screen" class="screen">
+                <div class="container">
+                    <div class="auth-form">
+                        <div class="form-header">
+                            <button id="back-from-register" class="back-button" aria-label="Go back">← Back</button>
+                            <h2>Create Your Account</h2>
+                            <p>Register with secure biometric authentication</p>
+                        </div>
+
+                        <form id="register-form">
+                            <div class="form-group">
+                                <label for="register-username" class="form-label">Username</label>
+                                <input type="text" id="register-username" class="form-control" placeholder="Enter your username" required>
+                                <div id="username-validation" class="validation-message"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-email" class="form-label">Email (optional)</label>
+                                <input type="email" id="register-email" class="form-control" placeholder="Enter your email">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Authenticator Type</label>
+                                <div class="authenticator-options">
+                                    <label class="radio-option">
+                                        <input type="radio" name="authenticatorType" value="platform" checked>
+                                        <div class="radio-content">
+                                            <div class="radio-icon">📱</div>
+                                            <div class="radio-text">
+                                                <strong>Platform Authenticator</strong>
+                                                <span>Built-in biometrics (Touch ID, Face ID, Windows Hello)</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="authenticatorType" value="cross-platform">
+                                        <div class="radio-content">
+                                            <div class="radio-icon">🔑</div>
+                                            <div class="radio-text">
+                                                <strong>Hardware Key</strong>
+                                                <span>External security keys (YubiKey, FIDO2)</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width">
+                                <span id="register-btn-text">Create Account</span>
+                                <div id="register-spinner" class="spinner hidden"></div>
+                            </button>
+                        </form>
+
+                        <div id="register-status" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authentication Screen -->
+            <div id="auth-screen" class="screen">
+                <div class="container">
+                    <div class="auth-form">
+                        <div class="form-header">
+                            <button id="back-from-auth" class="back-button" aria-label="Go back">← Back</button>
+                            <h2>Sign In</h2>
+                            <p>Authenticate with your registered account</p>
+                        </div>
+
+                        <form id="auth-form">
+                            <div class="form-group">
+                                <label for="auth-username" class="form-label">Username (optional)</label>
+                                <input type="text" id="auth-username" class="form-control" placeholder="Enter username or leave blank for autofill">
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width">
+                                <span id="auth-btn-text">Authenticate</span>
+                                <div id="auth-spinner" class="spinner hidden"></div>
+                            </button>
+                        </form>
+
+                        <div class="auth-options">
+                            <button id="auth-platform" class="auth-option-btn">
+                                <div class="auth-option-icon">📱</div>
+                                <div class="auth-option-text">
+                                    <strong>Biometric Auth</strong>
+                                    <span>Use device biometrics</span>
+                                </div>
+                            </button>
+                            <button id="auth-hardware" class="auth-option-btn">
+                                <div class="auth-option-icon">🔑</div>
+                                <div class="auth-option-text">
+                                    <strong>Hardware Key</strong>
+                                    <span>Use security key</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="existing-users" id="existing-users-list">
+                            <h4>Quick Access</h4>
+                            <div id="user-buttons"></div>
+                        </div>
+
+                        <div id="auth-status" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Screen -->
+            <div id="dashboard-screen" class="screen">
+                <div class="container">
+                    <div class="dashboard-header">
+                        <h2>Welcome, <span id="user-display-name">User</span>!</h2>
+                        <div class="header-actions">
+                            <button id="manage-account" class="btn btn--outline">Manage Account</button>
+                            <button id="logout-btn" class="btn btn--outline">Sign Out</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <!-- Account Overview -->
+                        <div class="dashboard-section">
+                            <h3>👤 Account Information</h3>
+                            <div class="account-info-grid">
+                                <div class="info-card">
+                                    <h4>Username</h4>
+                                    <p id="account-username">-</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>Email</h4>
+                                    <p id="account-email">Not provided</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>Member Since</h4>
+                                    <p id="account-created">-</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>Last Login</h4>
+                                    <p id="account-last-login">Now</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-section">
+                            <h3>🔐 Your Authenticators</h3>
+                            <p class="section-description">Manage your registered authentication methods</p>
+                            
+                            <div id="authenticators-list" class="authenticators-grid">
+                                <!-- Authenticators will be populated here -->
+                            </div>
+
+                            <button id="add-authenticator" class="btn btn--outline">
+                                <span>+ Add New Authenticator</span>
+                            </button>
+                        </div>
+
+                        <div class="dashboard-section">
+                            <h3>📊 Security Overview</h3>
+                            <div class="security-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">🔒</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="auth-count">0</div>
+                                        <div class="stat-label">Authenticators</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🛡️</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">100%</div>
+                                        <div class="stat-label">Security Score</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">⚡</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="login-count">1</div>
+                                        <div class="stat-label">Total Logins</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📈</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="risk-score">Low</div>
+                                        <div class="stat-label">Risk Level</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Behavioral Analytics -->
+                        <div class="dashboard-section">
+                            <h3>🧠 Behavioral Analytics</h3>
+                            <p class="section-description">Continuous authentication based on your behavior patterns</p>
+                            <div id="behavioral-data" class="behavioral-grid">
+                                <!-- Behavioral data will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Biometric Verification Modal -->
+        <div id="biometric-modal" class="modal biometric-modal hidden">
+            <div class="biometric-content">
+                <div class="biometric-header">
+                    <h3 id="biometric-title">Biometric Verification</h3>
+                    <button id="cancel-biometric" class="modal-close">×</button>
+                </div>
+                <div class="biometric-animation">
+                    <div id="biometric-scanner" class="biometric-scanner">
+                        <div class="scanner-circle">
+                            <div class="scanner-pulse"></div>
+                            <div id="biometric-icon" class="biometric-icon">👆</div>
+                        </div>
+                    </div>
+                    <div id="biometric-message" class="biometric-message">Place your finger on the sensor</div>
+                    <div id="biometric-progress" class="progress-bar">
+                        <div id="biometric-progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="biometric-actions">
+                    <button id="retry-biometric" class="btn btn--outline hidden">Try Again</button>
+                    <button id="fallback-auth" class="btn btn--outline">Use Fallback</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Authenticator Modal -->
+        <div id="add-auth-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Authenticator</h3>
+                    <button id="close-modal" class="modal-close" aria-label="Close modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <p>Choose the type of authenticator you want to add:</p>
+                    
+                    <div class="authenticator-options">
+                        <label class="radio-option">
+                            <input type="radio" name="newAuthenticatorType" value="platform" checked>
+                            <div class="radio-content">
+                                <div class="radio-icon">📱</div>
+                                <div class="radio-text">
+                                    <strong>Platform Authenticator</strong>
+                                    <span>Built-in biometrics</span>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="newAuthenticatorType" value="cross-platform">
+                            <div class="radio-content">
+                                <div class="radio-icon">🔑</div>
+                                <div class="radio-text">
+                                    <strong>Hardware Key</strong>
+                                    <span>External security key</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-add-auth" class="btn btn--outline">Cancel</button>
+                    <button id="confirm-add-auth" class="btn btn--primary">Add Authenticator</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p id="loading-message">Processing...</p>
+                <div class="loading-details" id="loading-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
