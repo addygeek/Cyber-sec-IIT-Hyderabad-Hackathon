@@ -51,6 +51,12 @@
                             <input type="email" id="reg-email" class="form-control" placeholder="Enter your email" required>
                         </div>
                         
+                        <!-- Honeypot field -->
+                        <div class="form-group honeypot">
+                            <label for="reg-extra" class="form-label" style="display:none;">Do not fill this field</label>
+                            <input type="text" id="reg-extra" name="reg-extra" class="form-control" style="display:none;" tabindex="-1" autocomplete="off">
+                        </div>
+
                         <button type="submit" class="btn btn--primary btn--full-width">Register with Biometric</button>
                     </form>
                     
@@ -94,6 +100,11 @@
                             <input type="text" id="login-username" class="form-control" placeholder="Enter your username" required>
                         </div>
                         
+                        <div class="form-group honeypot">
+                            <label for="login-extra" class="form-label" style="display:none;">Leave this empty</label>
+                            <input type="text" id="login-extra" name="login-extra" class="form-control" style="display:none;" tabindex="-1" autocomplete="off">
+                        </div>
+
                         <button type="submit" class="btn btn--primary btn--full-width">Login with Biometric</button>
                     </form>
                     
